@@ -1,7 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>
+img.formula {
+  display: block;
+  margin: 0.5ex 0;
+  white-space: pre;
+}
+img.extra {
+  margin: 2ex 0;
+}
+</style>
+<title>Pattern in the digits of triangular numbers</title>
+</head>
 <body>
-<h1>Digits of triangular numbers</h1>
-<p></p>
+<h1>Pattern in the digits of triangular numbers</h1>
+<p>Toying around with triangular numbers with certain digits, I did a search to see if others had found some neat formulas, and came across <a href="https://narrowdesert.blogspot.com/2019/10/patterns-in-digits-of-triangular-numbers.html">William James Tychonievich's blog entry</a> that mentioned a pattern in the digits - every 10*2 (for decimal) triangular number ends in the same digit, and this series of 20 ending digits is a palindrome, i.e. ten digits then those same digits in reverse. According to the blog, this held for every base (2*2 for binary, 3*2 for trinary and so on), and also held for higher digits, just one power of the base higher.</p>
+<p>The author did not feel he had the mathematics skill to express this algebraically or explore further, so I set to and tried myself. First thing I did was to look up the formula for triangular numbers:
+<img class="formula" src="triangularBase.png" alt="T(n) = n * (n + 1) / 2" data-latex="T_{n} = \frac{n (n + 1)}{2}"/>
+Trying out a few large numbers, incrementing n by, say 200 or 2000, and checking if the corresponding digit remained the same, showed that the pattern appeared to hold. I then tried to figure out the form of the number such an increment corresponds to; using k to mean the increment in the index of triangular numbers, I can use n and n + k in the above formula, and calculate the difference:
+<img class="formula" src="triangularDiff.png" alt="T(n + k) - T(n) =" data-latex="T_{n + k} - T_{n} ="/>
+<img class="formula extra" src="triangularDiff2.png" alt="(n + k) * (n + k + 1) / 2 - n * (n + 1) / 2 =" data-latex="\frac{(n + k) (n + k + 1)}{2} - \frac{n (n + 1)}{2} ="/>
+<img class="formula" src="triangularDiff3.png" alt="(2n + k + 3) * k / 2" data-latex="(2n + k + 3) \frac{k}{2}"/>
+and there seems to be the first answer; but cleaning it up makes it clearer, so let's swap variables and say
+<img class="formula" src="clarify.png" alt="k = 2b" data-latex="k = 2b"/>
+yielding
+<img class="formula" src="clarify2.png" alt="(2n + 2b + 3) * b" data-latex="(2n + 2b + 3) b"/>
+that is, if I make a step (of size k) over a number of triangular numbers equal to twice of a base (the b here), then the new triangular number is a multiple of b larger, which would preserve the last digit of the number in that base; similar if I said
+<img class="formula" src="powerDiff.png" alt="k = 2b ^ p" data-latex="k = 2b^{p}"/>
+with p being the power, i.e. a number position in the base b, the result would be
+<img class="formula" src="powerDiff2.png" alt="(2n + 2b ^ p + 3) * b ^ p" data-latex="(2n + 2b^{p} + 3) b^{p}"/>
+preserving the last p digits, and so on.</p>
+<p>But what about the palindrome property? Can I prove this in a similar simple way? Since I need to mirror around a point that moves, I need to extract the period part, and to mirror I can subtract the remainder. I'll try working it out with two triangular numbers n and m using formulas
+<img class="formula" src="palindromeSetup.png" alt="0 < r < b ^ p
+n = c * 2b ^ p + r
+m = (c + 1) * 2b ^ p - r - 1" data-latex="0 \leq  r < b ^ p \\ n = c 2b^{p} + r \\ m = (c + 1) 2b^{p} - r - 1"/>
+here, b is still the base, p is the power, c is a constant selecting which period, and r is where in the period I'm looking - for n an offset forward from the first number in the period, for m working backwards from the next period (minus one to get the last number in <em>this</em> period). The difference between the two then becomes:
+<img class="formula" src="palindromeShow.png" alt="T(m) - T(n) =
+m * (m + 1) / 2 - n * (n + 1) / 2 =
+(((c + 1) * 2b ^ p - r - 1) * ((c + 1) * 2b ^ p - r) - (c * 2b ^ p + r) * (c * 2b ^ p + r + 1)) / 2 =
+(2c + 1) * (2b ^ p - 2r -1) * b ^ p" data-latex="T_{m} - T{n} = \\\\ \frac{m (m + 1)}{2} - \frac{n (n + 1)}{2} = \\\\ \frac{(((c + 1) 2b^{p} - r - 1) ((c + 1) 2b^{p} - r) - (c2b^{p} + r) (c2b^{p} + r + 1))}{2} = \\\\ (2c + 1) (2b^{p} - 2r -1) b^{p}"/>
+and once again, the base to the power of the position turns out to be a factor of the difference, preserving the digits from that position out.</p>
 </body>
 </html>
